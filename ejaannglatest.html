@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Permainan Ejaan</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #87CEEB 0%, #98FB98 50%, #F0E68C 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4CAF50, #66BB6A);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .game-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .header-stats {
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            display: flex;
+            gap: 20px;
+            font-size: 1rem;
+        }
+
+        .header-timer {
+            position: absolute;
+            top: 20px;
+            right: 100px;
+            font-size: 1rem;
+        }
+
+        .header-stat {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .header-stat-label {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .header-stat-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .leaderboard-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            padding: 8px 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .leaderboard-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+
+        .leaderboard-btn-label {
+            font-size: 0.8rem;
+            opacity: 0.9;
+            display: block;
+        }
+
+        .leaderboard-btn-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: block;
+        }
+
+        .main-content {
+            padding: 40px;
+        }
+
+        .player-section {
+            background: #F5F5F5;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .player-input {
+            width: 100%;
+            max-width: 300px;
+            padding: 15px 20px;
+            border: 2px solid #E0E0E0;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .player-input:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+
+        .player-dropdown {
+            width: 100%;
+            max-width: 300px;
+            padding: 15px 20px;
+            border: 2px solid #E0E0E0;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .player-dropdown:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+
+        .or-divider {
+            margin: 15px 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .start-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .start-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .game-area {
+            display: none;
+            text-align: center;
+        }
+
+        .word-display {
+            background: #F8F9FA;
+            border: 3px solid #4CAF50;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2E7D32;
+            letter-spacing: 3px;
+        }
+
+        .spelling-input {
+            display: none;
+        }
+
+        .letter-boxes {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .letter-box {
+            width: 50px;
+            height: 50px;
+            border: 3px solid #E0E0E0;
+            border-radius: 10px;
+            font-size: 1.5rem;
+            text-align: center;
+            background: white;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .letter-box:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+
+        .letter-box.correct {
+            background: #E8F5E8;
+            border-color: #4CAF50;
+            color: #2E7D32;
+        }
+
+        .letter-box.incorrect {
+            background: #FFEBEE;
+            border-color: #F44336;
+            color: #C62828;
+        }
+
+        .game-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .game-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .submit-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .hint-btn {
+            background: #FF9800;
+            color: white;
+        }
+
+        .hint-btn:hover {
+            background: #F57C00;
+            transform: translateY(-2px);
+        }
+
+        .end-btn {
+            background: #dc3545;
+            color: white;
+        }
+
+        .end-btn:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        .feedback {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: #E8F5E8;
+            color: #2E7D32;
+            border: 2px solid #4CAF50;
+        }
+
+        .feedback.incorrect {
+            background: #FFEBEE;
+            color: #C62828;
+            border: 2px solid #F44336;
+        }
+
+        .progress-bar {
+            background: #E0E0E0;
+            border-radius: 10px;
+            height: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #4CAF50, #66BB6A);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .game-stats {
+            display: flex;
+            justify-content: space-around;
+            background: #F5F5F5;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #4CAF50;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .final-score {
+            display: none;
+            text-align: center;
+            background: #F8F9FA;
+            border-radius: 15px;
+            padding: 30px;
+        }
+
+        .score-title {
+            font-size: 2rem;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        .score-details {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .play-again-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .play-again-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .leaderboard-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .leaderboard-modal {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .leaderboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #E0E0E0;
+            padding-bottom: 15px;
+        }
+
+        .leaderboard-title {
+            font-size: 2rem;
+            color: #4CAF50;
+            margin: 0;
+        }
+
+        .close-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: #c82333;
+            transform: scale(1.1);
+        }
+
+        .leaderboard-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            border: 2px solid #4CAF50;
+            background: white;
+            color: #4CAF50;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .tab-btn.active {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .tab-btn:hover {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .player-search {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #E0E0E0;
+            border-radius: 10px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .player-search:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .leaderboard-table th,
+        .leaderboard-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #E0E0E0;
+        }
+
+        .leaderboard-table th {
+            background: #F5F5F5;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .leaderboard-table tr:hover {
+            background: #F8F9FA;
+        }
+
+        .rank-medal {
+            font-size: 1.2rem;
+            margin-right: 5px;
+        }
+
+        .no-records {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 40px;
+        }
+
+        @media (max-width: 600px) {
+            .game-title {
+                font-size: 2rem;
+            }
+            
+            .header-stats {
+                position: static;
+                justify-content: center;
+                margin-top: 20px;
+            }
+            
+            .header-timer {
+                position: static;
+                display: flex;
+                justify-content: center;
+                margin-top: 10px;
+            }
+            
+            .word-display {
+                font-size: 1.5rem;
+                padding: 20px;
+            }
+            
+            .spelling-input {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-stats">
+                <div class="header-stat">
+                    <div class="header-stat-label">Skor</div>
+                    <div class="header-stat-value" id="currentScore">0</div>
+                </div>
+                <div class="header-stat">
+                    <div class="header-stat-label">Soalan</div>
+                    <div class="header-stat-value" id="questionProgress">0/20</div>
+                </div>
+            </div>
+            <div class="header-timer">
+                <div class="header-stat">
+                    <div class="header-stat-label">Masa</div>
+                    <div class="header-stat-value" id="gameTimer">00:00</div>
+                </div>
+            </div>
+            <button class="leaderboard-btn" onclick="showLeaderboard()">
+                <div class="leaderboard-btn-label">Papan</div>
+                <div class="leaderboard-btn-value">🏆</div>
+            </button>
+            <h1 class="game-title">🎯 Permainan Ejaan</h1>
+            <p class="subtitle">Uji kemahiran ejaan anda dengan perkataan Bahasa Malaysia!</p>
+        </div>
+
+        <div class="main-content">
+            <!-- Setup Section -->
+            <div id="setupSection" class="player-section">
+                <h2 style="margin-bottom: 20px; color: #333;">Masukkan Nama Anda</h2>
+                <input type="text" id="playerName" class="player-input" placeholder="Nama pemain... *" maxlength="20" required>
+                <!-- Input nama sekolah -->
+                <input type="text" id="namasekolah" class="player-input" placeholder="Nama Sekolah *" style="margin-bottom: 10px; padding: 8px; width: 100%;" required>
+                <div class="or-divider">atau</div>
+                <select class="player-dropdown" id="playerSelect">
+                    <option value="">Pilih nama dari sejarah...</option>
+                </select>
+                <br><br>
+                <div style="display: flex; gap: 15px; justify-content: center; align-items: center;">
+                    <button class="start-btn" onclick="startGame()">🚀 Mula Permainan</button>
+                    <button class="start-btn" onclick="resetPlayerSelection()" style="background: #dc3545;">🔄 Reset</button>
+                </div>
+            </div>
+
+            <!-- Game Area -->
+            <div id="gameArea" class="game-area">
+                <div class="word-display" id="wordDisplay">
+                    <div id="wordEmoji" style="font-size: 3rem; margin-bottom: 15px;">🎯</div>
+                    <div id="wordClue" style="font-size: 1.2rem; color: #666; margin-bottom: 20px;">Klik "Perkataan Baru" untuk mula!</div>
+                </div>
+
+                <div class="feedback" id="feedback"></div>
+
+                <div class="letter-boxes" id="letterBoxes"></div>
+                <input type="text" id="spellingInput" class="spelling-input" placeholder="Taip ejaan di sini..." autocomplete="off">
+
+                <div class="game-buttons">
+                    <button id="endGame" class="game-btn end-btn">🛑 Tamat</button>
+                </div>
+            </div>
+
+            <!-- Final Score -->
+            <div id="finalScore" class="final-score">
+                <div class="score-title">🎉 Tahniah!</div>
+                <div class="score-details" id="scoreDetails"></div>
+                <button id="playAgain" class="play-again-btn">🔄 Main Lagi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaderboard Overlay -->
+    <div id="leaderboardOverlay" class="leaderboard-overlay">
+        <div class="leaderboard-modal">
+            <div class="leaderboard-header">
+                <h2 class="leaderboard-title">🏆 Papan Markah</h2>
+                <button class="close-btn" onclick="hideLeaderboard()">×</button>
+            </div>
+            
+            <div class="leaderboard-tabs">
+                <button class="tab-btn active" onclick="showAllRecords()">Semua Rekod</button>
+                <button class="tab-btn" onclick="showPlayerSearch()">Cari Pemain</button>
+            </div>
+            
+            <div id="playerSearchSection" style="display: none;">
+                <input type="text" id="playerSearchInput" class="player-search" placeholder="Masukkan nama pemain untuk cari rekod...">
+            </div>
+            
+            <div id="leaderboardContent">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class SpellingGame {
+            constructor() {
+                this.words = [
+                    { word: 'sotong', clue: 'Haiwan laut yang mempunyai 8 kaki', emoji: '🦑' },
+                    { word: 'cacing', clue: 'Haiwan kecil yang hidup dalam tanah', emoji: '🪱' },
+                    { word: 'subang', clue: 'Perhiasan yang dipakai di telinga', emoji: '💎' },
+                    { word: 'jagung', clue: 'Bijirin kuning yang manis', emoji: '🌽' },
+                    { word: 'kucing', clue: 'Haiwan peliharaan yang suka mengeong', emoji: '🐱' },
+                    { word: 'pisang', clue: 'Buah kuning yang panjang', emoji: '🍌' },
+                    { word: 'butang', clue: 'Digunakan untuk menutup baju', emoji: '🔘' },
+                    { word: 'lalang', clue: 'Rumput tinggi yang tumbuh liar', emoji: '🌾' },
+                    { word: 'kerang', clue: 'Haiwan laut yang mempunyai cangkerang', emoji: '🐚' },
+                    { word: 'musang', clue: 'Haiwan kecil yang pandai memanjat', emoji: '🦝' },
+                    { word: 'helang', clue: 'Burung besar yang terbang tinggi', emoji: '🦅' },
+                    { word: 'bawang', clue: 'Sayuran yang membuat mata berair', emoji: '🧅' },
+                    { word: 'kacang', clue: 'Bijirin kecil yang boleh dimakan', emoji: '🥜' },
+                    { word: 'payung', clue: 'Digunakan ketika hujan atau panas', emoji: '☂️' },
+                    { word: 'balang', clue: 'Bekas untuk menyimpan makanan', emoji: '🫙' },
+                    { word: 'terung', clue: 'Sayuran ungu yang panjang', emoji: '🍆' },
+                    { word: 'benang', clue: 'Digunakan untuk menjahit baju', emoji: '🧵' },
+                    { word: 'hidung', clue: 'Bahagian muka untuk menghidu bau', emoji: '👃' },
+                    { word: 'gasing', clue: 'Mainan tradisional yang berputar', emoji: '🌀' },
+                    { word: 'jerung', clue: 'Ikan besar dan ganas di laut', emoji: '🦈' }
+                ];
+                
+                this.currentWordIndex = 0;
+                this.score = 0;
+                this.correctAnswers = 0;
+                this.wrongAnswers = 0;
+                this.level = 1;
+                this.playerName = '';
+                this.schoolName = '';
+                this.totalQuestions = 10;
+                this.hintsUsed = 0;
+                this.currentWord = null;
+                this.letterBoxes = [];
+                this.gameStartTime = null;
+                this.timerInterval = null;
+                
+                this.loadPlayerHistory();
+                this.initializeGame();
+            }
+            
+            initializeGame() {
+                // Setup event listeners - using global functions for onclick compatibility
+                window.startGame = () => this.startGame();
+                window.resetPlayerSelection = () => this.resetPlayerSelection();
+                window.showLeaderboard = () => this.showLeaderboard();
+                window.hideLeaderboard = () => this.hideLeaderboard();
+                window.showAllRecords = () => this.showAllRecords();
+                window.showPlayerSearch = () => this.showPlayerSearch();
+                document.getElementById('endGame').addEventListener('click', () => this.endGame());
+                document.getElementById('playAgain').addEventListener('click', () => this.resetGame());
+                
+                // Player search functionality
+                document.getElementById('playerSearchInput').addEventListener('input', (e) => {
+                    this.searchPlayerRecords(e.target.value);
+                });
+                
+                document.getElementById('playerName').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.startGame();
+                    }
+                });
+                
+                // Dropdown selection
+                document.getElementById('playerSelect').addEventListener('change', (e) => {
+                    if (e.target.value) {
+                        document.getElementById('playerName').value = e.target.value;
+                    }
+                });
+            }
+            
+            startGame() {
+                const nameInput = document.getElementById('playerName').value.trim();
+                const nameSelect = document.getElementById('playerSelect').value;
+                const schoolName = document.getElementById('namasekolah').value.trim();
+                
+                this.playerName = nameInput || nameSelect;
+                this.schoolName = schoolName;
+                
+                if (!this.playerName) {
+                    alert('Sila masukkan nama anda terlebih dahulu!');
+                    return;
+                }
+                
+                if (!this.schoolName) {
+                    alert('Sila masukkan nama sekolah anda terlebih dahulu!');
+                    return;
+                }
+                
+                console.log('Game started with:', {
+                    playerName: this.playerName,
+                    schoolName: this.schoolName
+                });
+                
+                // Shuffle words for variety
+                this.shuffleWords();
+                
+                document.getElementById('setupSection').style.display = 'none';
+                document.getElementById('gameArea').style.display = 'block';
+                
+                // Start timer
+                this.startTimer();
+                
+                this.showNewWord();
+                this.updateDisplay();
+            }
+            
+            resetPlayerSelection() {
+                document.getElementById('playerName').value = '';
+                document.getElementById('namasekolah').value = '';
+                document.getElementById('playerSelect').value = '';
+            }
+            
+            shuffleWords() {
+                for (let i = this.words.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [this.words[i], this.words[j]] = [this.words[j], this.words[i]];
+                }
+            }
+            
+            showNewWord() {
+                if (this.currentWordIndex >= this.totalQuestions) {
+                    this.endGame();
+                    return;
+                }
+                
+                this.currentWord = this.words[this.currentWordIndex];
+                
+                // Update display
+                document.getElementById('wordEmoji').textContent = this.currentWord.emoji;
+                document.getElementById('wordClue').textContent = this.currentWord.clue;
+                
+                // Create letter boxes
+                this.createLetterBoxes();
+                
+                // Hide feedback
+                document.getElementById('feedback').style.display = 'none';
+                
+                // Update level based on progress
+                this.level = Math.floor(this.currentWordIndex / 3) + 1;
+                
+                this.updateDisplay();
+            }
+            
+            createLetterBoxes() {
+                const letterBoxesContainer = document.getElementById('letterBoxes');
+                letterBoxesContainer.innerHTML = '';
+                this.letterBoxes = [];
+                
+                for (let i = 0; i < this.currentWord.word.length; i++) {
+                    const letterBox = document.createElement('input');
+                    letterBox.type = 'text';
+                    letterBox.className = 'letter-box';
+                    letterBox.maxLength = 1;
+                    letterBox.dataset.index = i;
+                    
+                    // Add event listeners
+                    letterBox.addEventListener('input', (e) => this.handleLetterInput(e, i));
+                    letterBox.addEventListener('keydown', (e) => this.handleKeyDown(e, i));
+                    letterBox.addEventListener('paste', (e) => this.handlePaste(e));
+                    
+                    letterBoxesContainer.appendChild(letterBox);
+                    this.letterBoxes.push(letterBox);
+                }
+                
+                // Focus first box
+                if (this.letterBoxes.length > 0) {
+                    this.letterBoxes[0].focus();
+                }
+            }
+            
+            handleLetterInput(event, index) {
+                const value = event.target.value.toLowerCase();
+                
+                // Move to next box if letter entered
+                if (value && index < this.letterBoxes.length - 1) {
+                    this.letterBoxes[index + 1].focus();
+                }
+                
+                // Check if word is complete
+                this.checkWordComplete();
+            }
+            
+            handleKeyDown(event, index) {
+                // Handle backspace
+                if (event.key === 'Backspace' && !event.target.value && index > 0) {
+                    this.letterBoxes[index - 1].focus();
+                }
+                
+                // Handle arrow keys
+                if (event.key === 'ArrowLeft' && index > 0) {
+                    this.letterBoxes[index - 1].focus();
+                } else if (event.key === 'ArrowRight' && index < this.letterBoxes.length - 1) {
+                    this.letterBoxes[index + 1].focus();
+                }
+                
+                // Handle Enter
+                if (event.key === 'Enter') {
+                    this.checkAnswer();
+                }
+            }
+            
+            handlePaste(event) {
+                event.preventDefault();
+                const pastedText = (event.clipboardData || window.clipboardData).getData('text').toLowerCase();
+                
+                for (let i = 0; i < Math.min(pastedText.length, this.letterBoxes.length); i++) {
+                    this.letterBoxes[i].value = pastedText[i];
+                }
+                
+                this.checkWordComplete();
+            }
+            
+            checkWordComplete() {
+                const allFilled = this.letterBoxes.every(box => box.value.trim() !== '');
+                if (allFilled) {
+                    setTimeout(() => this.checkAnswer(), 300);
+                }
+            }
+            
+            checkAnswer() {
+                const userInput = this.letterBoxes.map(box => box.value.toLowerCase()).join('');
+                const feedback = document.getElementById('feedback');
+                
+                if (!userInput || userInput.length !== this.currentWord.word.length) {
+                    alert('Sila lengkapkan semua kotak huruf!');
+                    return;
+                }
+                
+                let isCorrect = true;
+                
+                // Check each letter and color the boxes
+                for (let i = 0; i < this.currentWord.word.length; i++) {
+                    const letterBox = this.letterBoxes[i];
+                    const userLetter = userInput[i];
+                    const correctLetter = this.currentWord.word[i].toLowerCase();
+                    
+                    if (userLetter === correctLetter) {
+                        letterBox.classList.add('correct');
+                        letterBox.classList.remove('incorrect');
+                    } else {
+                        letterBox.classList.add('incorrect');
+                        letterBox.classList.remove('correct');
+                        isCorrect = false;
+                    }
+                }
+                
+                if (isCorrect) {
+                    // Correct answer
+                    this.correctAnswers++;
+                    this.score += 10;
+                    
+                    feedback.textContent = `🎉 Betul!`;
+                    feedback.className = 'feedback correct';
+                    feedback.style.display = 'block';
+                    
+                    this.currentWordIndex++;
+                    
+                    // Auto move to next question after 1.5 seconds
+                    setTimeout(() => {
+                        this.showNewWord();
+                    }, 1500);
+                    
+                } else {
+                    // Wrong answer
+                    this.wrongAnswers++;
+                    
+                    feedback.textContent = `❌ Salah!`;
+                    feedback.className = 'feedback incorrect';
+                    feedback.style.display = 'block';
+                    
+                    this.currentWordIndex++;
+                    
+                    // Move to next question after 2 seconds
+                    setTimeout(() => {
+                        this.showNewWord();
+                    }, 2000);
+                }
+                
+                this.updateDisplay();
+            }
+
+            
+            startTimer() {
+                this.gameStartTime = Date.now();
+                this.timerInterval = setInterval(() => {
+                    const elapsed = Date.now() - this.gameStartTime;
+                    const minutes = Math.floor(elapsed / 60000);
+                    const seconds = Math.floor((elapsed % 60000) / 1000);
+                    document.getElementById('gameTimer').textContent = 
+                        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }, 1000);
+            }
+            
+            stopTimer() {
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                    this.timerInterval = null;
+                }
+            }
+            
+            loadPlayerHistory() {
+    const history = JSON.parse(localStorage.getItem('spellingGameHistory') || '[]');
+    const playerSelect = document.getElementById('playerSelect');
+    
+    // Clear existing options except the first one
+    while (playerSelect.children.length > 1) {
+        playerSelect.removeChild(playerSelect.lastChild);
+    }
+    
+    // Add unique player names and schools from history
+    const uniquePlayers = [];
+    const seen = new Set();
+    
+    history.forEach(record => {
+        const key = `${record.playerName}|${record.schoolName || ''}`;
+        if (!seen.has(key)) {
+            seen.add(key);
+            uniquePlayers.push({
+                name: record.playerName,
+                school: record.schoolName || ''
+            });
+        }
+    });
+    
+    uniquePlayers.forEach(player => {
+        const option = document.createElement('option');
+        option.value = player.name;
+        option.dataset.school = player.school;
+        option.textContent = player.school ? `${player.name} (${player.school})` : player.name;
+        playerSelect.appendChild(option);
+    });
+    
+    // Add dropdown selection event listener
+    playerSelect.addEventListener('change', (e) => {
+        if (e.target.value) {
+            document.getElementById('playerName').value = e.target.value;
+            const selectedOption = e.target.options[e.target.selectedIndex];
+            const school = selectedOption.dataset.school || '';
+            document.getElementById('namasekolah').value = school;
+        }
+    });
+}
+            
+            saveToHistory() {
+                const history = JSON.parse(localStorage.getItem('spellingGameHistory') || '[]');
+                const finalTime = document.getElementById('gameTimer').textContent;
+                const accuracy = Math.round((this.correctAnswers / this.totalQuestions) * 100);
+                
+                const record = {
+                    playerName: this.playerName,
+                    schoolName: this.schoolName,
+                    score: this.score,
+                    accuracy: accuracy,
+                    time: finalTime,
+                    date: new Date().toLocaleDateString('ms-MY'),
+                    correctAnswers: this.correctAnswers,
+                    totalQuestions: this.totalQuestions
+                };
+                
+                console.log('Saving record:', record);
+                
+                history.push(record);
+                
+                // Keep only last 50 records
+                if (history.length > 50) {
+                    history.splice(0, history.length - 50);
+                }
+                
+                localStorage.setItem('spellingGameHistory', JSON.stringify(history));
+                
+                // Send to Google Sheets with debug info
+                this.sendToGoogleSheets(record);
+            }
+            
+            sendToGoogleSheets(record) {
+                // Ganti dengan URL Google Apps Script anda
+                const googleSheetsUrl = 'https://script.google.com/a/macros/moe-dl.edu.my/s/AKfycbxpSrtFwcgt0O9jeg4At4gceYoEw7pf5ugKSIm_NxPOM-_fyQlIvrAUe9oyK7p-lSvM/exec';
+                
+const data = {
+  nama: record.playerName || '',
+  sekolah: record.schoolName || '',
+  skor: record.score || 0,
+  masa: record.time ? record.time : "0:00"
+};
+                console.log('Data yang akan dihantar ke Google Sheets:', data);
+                
+                // Method 1: Try with FormData
+                const formData = new FormData();
+                Object.keys(data).forEach(key => {
+                    formData.append(key, data[key]);
+                });
+                
+                fetch(googleSheetsUrl, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    if (response.ok) {
+                        console.log('✅ Data berjaya dihantar ke Google Sheets (FormData)');
+                    } else {
+                        throw new Error('FormData method failed');
+                    }
+                })
+                .catch((error) => {
+                    console.warn('FormData method gagal, cuba JSON method:', error);
+                    
+                    // Method 2: Fallback with JSON
+                    fetch(googleSheetsUrl, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(() => {
+                        console.log('✅ Data dihantar menggunakan JSON fallback method');
+                    })
+                    .catch((fallbackError) => {
+                        console.error('❌ Kedua-dua method gagal:', fallbackError);
+                        
+                        // Method 3: Try with URL parameters
+                        const params = new URLSearchParams(data);
+                        fetch(`${googleSheetsUrl}?${params.toString()}`, {
+                            method: 'GET',
+                            mode: 'no-cors'
+                        })
+                        .then(() => {
+                            console.log('✅ Data dihantar menggunakan URL params method');
+                        })
+                        .catch((urlError) => {
+                            console.error('❌ Semua method gagal:', urlError);
+                        });
+                    });
+                });
+            }
+            
+            updateDisplay() {
+                document.getElementById('currentScore').textContent = this.score;
+                document.getElementById('questionProgress').textContent = `${this.currentWordIndex}/${this.totalQuestions}`;
+            }
+            
+            endGame() {
+                this.stopTimer();
+                this.saveToHistory();
+                document.getElementById('gameArea').style.display = 'none';
+                document.getElementById('finalScore').style.display = 'block';
+                
+                const accuracy = Math.round((this.correctAnswers / this.totalQuestions) * 100);
+                let performance = '';
+                
+                if (accuracy >= 90) performance = 'Cemerlang! 🌟';
+                else if (accuracy >= 70) performance = 'Bagus! 👍';
+                else if (accuracy >= 50) performance = 'Sederhana 👌';
+                else performance = 'Perlu diperbaiki 💪';
+                
+                const schoolInfo = this.schoolName ? `<br><strong>Sekolah:</strong> ${this.schoolName}` : '';
+                const finalTime = document.getElementById('gameTimer').textContent;
+                
+                document.getElementById('scoreDetails').innerHTML = `
+                    <strong>${this.playerName}</strong>, anda telah selesai!${schoolInfo}<br><br>
+                    <strong>Skor Akhir:</strong> ${this.score} mata<br>
+                    <strong>Masa Diambil:</strong> ${finalTime}<br>
+                    <strong>Ketepatan:</strong> ${accuracy}%<br>
+                    <strong>Jawapan Betul:</strong> ${this.correctAnswers}/${this.totalQuestions}<br><br>
+                    <strong>Prestasi:</strong> ${performance}
+                `;
+            }
+            
+            showLeaderboard() {
+                document.getElementById('leaderboardOverlay').style.display = 'flex';
+                this.showAllRecords();
+            }
+            
+            hideLeaderboard() {
+                document.getElementById('leaderboardOverlay').style.display = 'none';
+            }
+            
+            showAllRecords() {
+                // Update tab buttons
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                
+                // Hide search section
+                document.getElementById('playerSearchSection').style.display = 'none';
+                
+                const history = JSON.parse(localStorage.getItem('spellingGameHistory') || '[]');
+                
+                if (history.length === 0) {
+                    document.getElementById('leaderboardContent').innerHTML = 
+                        '<div class="no-records">Tiada rekod dijumpai. Mula bermain untuk melihat rekod!</div>';
+                    return;
+                }
+                
+                // Sort by score (descending), then by accuracy, then by time
+                const sortedHistory = history.sort((a, b) => {
+                    if (b.score !== a.score) return b.score - a.score;
+                    if (b.accuracy !== a.accuracy) return b.accuracy - a.accuracy;
+                    return a.time.localeCompare(b.time);
+                });
+                
+                let tableHTML = `
+                    <table class="leaderboard-table">
+                        <thead>
+                            <tr>
+                                <th>Kedudukan</th>
+                                <th>Nama</th>
+                                <th>Sekolah</th>
+                                <th>Skor</th>
+                                <th>Ketepatan</th>
+                                <th>Masa</th>
+                                <th>Tarikh</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                sortedHistory.forEach((record, index) => {
+                    let medal = '';
+                    if (index === 0) medal = '<span class="rank-medal">🥇</span>';
+                    else if (index === 1) medal = '<span class="rank-medal">🥈</span>';
+                    else if (index === 2) medal = '<span class="rank-medal">🥉</span>';
+                    
+                    tableHTML += `
+                        <tr>
+                            <td>${medal}${index + 1}</td>
+                            <td>${record.playerName}</td>
+                            <td>${record.schoolName || '-'}</td>
+                            <td>${record.score}</td>
+                            <td>${record.accuracy}%</td>
+                            <td>${record.time}</td>
+                            <td>${record.date}</td>
+                        </tr>
+                    `;
+                });
+                
+                tableHTML += '</tbody></table>';
+                document.getElementById('leaderboardContent').innerHTML = tableHTML;
+            }
+            
+            showPlayerSearch() {
+                // Update tab buttons
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                
+                // Show search section
+                document.getElementById('playerSearchSection').style.display = 'block';
+                document.getElementById('playerSearchInput').value = '';
+                document.getElementById('playerSearchInput').focus();
+                
+                // Show empty state
+                document.getElementById('leaderboardContent').innerHTML = 
+                    '<div class="no-records">Masukkan nama pemain untuk melihat rekod mereka.</div>';
+            }
+            
+            searchPlayerRecords(searchTerm) {
+                if (!searchTerm.trim()) {
+                    document.getElementById('leaderboardContent').innerHTML = 
+                        '<div class="no-records">Masukkan nama pemain untuk melihat rekod mereka.</div>';
+                    return;
+                }
+                
+                const history = JSON.parse(localStorage.getItem('spellingGameHistory') || '[]');
+                const playerRecords = history.filter(record => 
+                    record.playerName.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+                
+                if (playerRecords.length === 0) {
+                    document.getElementById('leaderboardContent').innerHTML = 
+                        '<div class="no-records">Tiada rekod dijumpai untuk pemain ini.</div>';
+                    return;
+                }
+                
+                // Sort player records by score (descending)
+                const sortedRecords = playerRecords.sort((a, b) => {
+                    if (b.score !== a.score) return b.score - a.score;
+                    if (b.accuracy !== a.accuracy) return b.accuracy - a.accuracy;
+                    return a.time.localeCompare(b.time);
+                });
+                
+                let tableHTML = `
+                    <h3 style="color: #4CAF50; margin-bottom: 15px;">Rekod untuk: ${searchTerm}</h3>
+                    <table class="leaderboard-table">
+                        <thead>
+                            <tr>
+                                <th>Nama</th>
+                                <th>Sekolah</th>
+                                <th>Skor</th>
+                                <th>Ketepatan</th>
+                                <th>Masa</th>
+                                <th>Tarikh</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                sortedRecords.forEach(record => {
+                    tableHTML += `
+                        <tr>
+                            <td>${record.playerName}</td>
+                            <td>${record.schoolName || '-'}</td>
+                            <td>${record.score}</td>
+                            <td>${record.accuracy}%</td>
+                            <td>${record.time}</td>
+                            <td>${record.date}</td>
+                        </tr>
+                    `;
+                });
+                
+                tableHTML += '</tbody></table>';
+                
+                // Add statistics
+                const bestScore = Math.max(...sortedRecords.map(r => r.score));
+                const avgScore = Math.round(sortedRecords.reduce((sum, r) => sum + r.score, 0) / sortedRecords.length);
+                const bestAccuracy = Math.max(...sortedRecords.map(r => r.accuracy));
+                const totalGames = sortedRecords.length;
+                
+                tableHTML += `
+                    <div style="margin-top: 20px; padding: 15px; background: #F5F5F5; border-radius: 10px;">
+                        <h4 style="color: #333; margin-bottom: 10px;">Statistik Pemain:</h4>
+                        <p><strong>Jumlah Permainan:</strong> ${totalGames}</p>
+                        <p><strong>Skor Terbaik:</strong> ${bestScore}</p>
+                        <p><strong>Skor Purata:</strong> ${avgScore}</p>
+                        <p><strong>Ketepatan Terbaik:</strong> ${bestAccuracy}%</p>
+                    </div>
+                `;
+                
+                document.getElementById('leaderboardContent').innerHTML = tableHTML;
+            }
+
+            resetGame() {
+                this.stopTimer();
+                this.currentWordIndex = 0;
+                this.score = 0;
+                this.correctAnswers = 0;
+                this.wrongAnswers = 0;
+                this.level = 1;
+                this.hintsUsed = 0;
+                this.gameStartTime = null;
+                
+                document.getElementById('gameTimer').textContent = '00:00';
+                document.getElementById('finalScore').style.display = 'none';
+                document.getElementById('setupSection').style.display = 'block';
+                document.getElementById('playerName').value = '';
+                document.getElementById('playerSelect').value = '';
+                
+                this.loadPlayerHistory();
+                this.shuffleWords();
+                this.updateDisplay();
+            }
+        }
+        
+        // Initialize the game when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            new SpellingGame();
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97845e4171fc0988',t:'MTc1NjcyNTUxOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
